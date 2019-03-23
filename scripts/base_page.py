@@ -7,16 +7,23 @@ from expected_conditions_attribute import element_attribute_changed
 
 class BasePageObject:
     
+    default_timeout = 10000
+
+
+
     def __init__(self,webdriver):
         self.driver = webdriver
         self.window_handle = None
 
-    def find_element_by(self,locator):
-        wait = WebDriverWait(self.driver,100)
+    def wait_for_element(self,locator,timeout):
+        wait = WebDriverWait(self.driver,timeout)
         return wait.until(EC.visibility_of_element_located(locator))
+
+    def find_element_by(self,locator):
+       return self.wait_for_element(locator,BasePageObject.default_timeout)
     
     def find_elements_by(self,multiple_locator):
-        wait = WebDriverWait(self.driver,100)
+        wait = WebDriverWait(self.driver,BasePageObject.default_timeout)
         try:
             elements = wait.until(EC.visibility_of_all_elements_located(multiple_locator))
         except TimeoutError:
